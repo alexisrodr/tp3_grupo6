@@ -38,13 +38,28 @@ public class Registrarse extends AppCompatActivity {
         if(!nombre.isEmpty() && !email.isEmpty() && !newPass.isEmpty() && !repPass.isEmpty()){
             if(newPass.compareTo(repPass)==0){
                 usuario= new Usuario(nombre,email,newPass);
-                conn.createUsuario(usuario);
-                mensaje="Usuario "+nombre+ " registrado";
 
-                editName.setText("");
-                editEmail.setText("");
-                editNewPassword.setText("");
-                editRepeatPassword.setText("");
+                boolean registrado = conn.createUsuario(usuario);
+
+                if(registrado)
+
+                {
+                    mensaje="Usuario "+nombre+ " registrado";
+
+                    editName.setText("");
+                    editEmail.setText("");
+                    editNewPassword.setText("");
+                    editRepeatPassword.setText("");
+
+                    setContentView(R.layout.activity_main);
+
+                }
+                else
+                {
+                    mensaje="El usuario " + email + " ya se encuentra registrado.";
+                }
+
+
             }
             else
                 mensaje="Las contraseñas no coinciden";
