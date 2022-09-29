@@ -51,7 +51,7 @@ public class Registrarse extends AppCompatActivity {
                     editNewPassword.setText("");
                     editRepeatPassword.setText("");
 
-                    setContentView(R.layout.activity_main);
+                    finish();
 
                 }
                 else

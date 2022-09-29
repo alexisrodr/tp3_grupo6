@@ -18,24 +18,25 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
+    private String tablaUsuarios = "create table usuarios(" +
+            "id integer primary key autoincrement," +
+            "nombre text," +
+            "correo text, " +
+            "password text);";
+
+    private String tablaParkeos = "create table parkeos(" +
+            "id integer primary key autoincrement," +
+            "matricula text," +
+            "minutos integer, " +
+            "usuario_id integer);";
+
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@Nullable SQLiteDatabase db) {
 
-
-        String createTableUsuarios = "create table usuarios(" +
-                "id integer primary key autoincrement," +
-                "nombre text," +
-                "correo text, " +
-                "password text);";
-
-        String createTableParkeos = "create table parkeos(" +
-                "id integer primary key autoincrement," +
-                "matricula text," +
-                "minutos integer, " +
-                "usuario_id integer);";
-
-        db.execSQL(createTableUsuarios);
-        db.execSQL(createTableParkeos);
+        if(db!=null) {
+            db.execSQL(tablaUsuarios);
+            db.execSQL(tablaParkeos);
+        }
 
 
         //createUsuario(new Usuario("Cosme Fulanito","cosme@gmail.com","1234"));
@@ -48,36 +49,28 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    public void abrir() {
-        this.getWritableDatabase();
-    }
-
-    public void cerrar() {
-        this.close();
-    }
-
-
     //Verificar usuario
-    public Usuario VerificarUsuario(String correo, String password) {
+    public Usuario VerificarUsuario(String nombre, String password) {
 
         Usuario usuario = new Usuario();
-
-        abrir();
-        SQLiteDatabase bd = this.getReadableDatabase();
+        SQLiteDatabase bd = getReadableDatabase();
 
         Cursor fila = bd.rawQuery
-                ("select nombre, correo from usuarios where correo = '" +
-                        correo + "' and password = '" + password + "' or password = ''", null);
+                ("select nombre, correo from usuarios where nombre = '" +
+                        nombre + "' and password = '" + password + "' or password = ''", null);
 
 
         //bd.query("usuarios", new string[]{"id, nombre, pass"}, "nombre = '" )
 
-        if (fila.moveToFirst()) {
-            usuario.setNombre(fila.getString(0));
-            usuario.setCorreo(fila.getString(1));
-            bd.close();
+        if(fila!=null) {
+            if (fila.moveToFirst()) {
+                usuario.setNombre(fila.getString(0));
+                usuario.setCorreo(fila.getString(1));
+            }
+            fila.close();
         }
-        cerrar();
+
+        bd.close();
         return usuario;
     }
 
@@ -86,6 +79,8 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
     public boolean createUsuario(Usuario usuario) {
 
         Usuario UsuarioAuxiliar = VerificarUsuario(usuario.getCorreo(), "");
+        boolean creado= false;
+        SQLiteDatabase bd = getWritableDatabase();
         if (UsuarioAuxiliar.getNombre() == null) {
             ContentValues valores = new ContentValues();
 
@@ -93,24 +88,25 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
             valores.put("correo", usuario.getCorreo());
             valores.put("password", usuario.getPassword());
 
-            this.getWritableDatabase().insert("usuarios", null, valores);
-
-            cerrar();
-            return true;
+            bd.insert("usuarios", null, valores);
+            creado = true;
         }
-        return false;
 
+        bd.close();
+        return creado;
 
     }
 
     //CREATE PARKING
     public void createParkeo(Parkeo parkeo) {
+        SQLiteDatabase bd = getWritableDatabase();
         ContentValues valores = new ContentValues();
 
         valores.put("matricula", parkeo.getMatricula());
         valores.put("minutos", parkeo.getMinutos());
         valores.put("usuario_id", parkeo.getUsuario_id());
 
-        this.getWritableDatabase().insert("parkeos", null, valores);
+        bd.insert("parkeos", null, valores);
+        bd.close();
     }
 }
