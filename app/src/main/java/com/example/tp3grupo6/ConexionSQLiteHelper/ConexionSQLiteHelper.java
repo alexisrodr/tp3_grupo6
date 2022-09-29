@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import com.example.tp3grupo6.entidades.Parkeo;
 import com.example.tp3grupo6.entidades.Usuario;
 
+import java.util.ArrayList;
+
 public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
     public ConexionSQLiteHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
@@ -40,7 +42,6 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
 
         //createUsuario(new Usuario("Cosme Fulanito","cosme@gmail.com","1234"));
-        //createParkeo(new Parkeo("ABC123",60,1));
 
     }
 
@@ -108,5 +109,22 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
         bd.insert("parkeos", null, valores);
         bd.close();
+    }
+
+    public ArrayList<Parkeo> obtenerParkeos(int idUsuario){
+        ArrayList<Parkeo> listaParkeo = new ArrayList<>();
+        SQLiteDatabase bd = getReadableDatabase();
+
+
+        Cursor cursor = bd.rawQuery("SELECT * FROM parkeos WHERE usuario_id=" + idUsuario,null);
+        if(cursor.moveToFirst()) {
+            do {
+                Parkeo park = new Parkeo(cursor.getInt(0), cursor.getString(1), cursor.getInt(2), cursor.getInt(3));
+                listaParkeo.add(park);
+            } while(cursor.moveToNext());
+        }
+        cursor.close();
+        bd.close();
+        return listaParkeo;
     }
 }
