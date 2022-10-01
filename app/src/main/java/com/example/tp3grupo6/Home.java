@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.example.tp3grupo6.entidades.Usuario;
 import com.google.android.material.snackbar.Snackbar;
@@ -20,7 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tp3grupo6.databinding.ActivityHomeBinding;
 
-public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Home extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener , RegistrarMatriculaDialog.RegistrarMatriculaDialogListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
@@ -42,17 +44,12 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         binding.appBarHome.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               openDialog();
             }
         });
+
         DrawerLayout drawer = binding.drawerLayout;
-
-
-
-
         NavigationView navigationView = binding.navView;
-
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -100,5 +97,18 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
         }
         return true;
+    }
+
+    public void openDialog(){
+        RegistrarMatriculaDialog dialog = new RegistrarMatriculaDialog();
+        dialog.show(getSupportFragmentManager(),"Registrar Parqueo");
+    }
+
+    @Override
+    public void obtenerTexto(String matricula, String minutos) {
+        
+
+        String mensaje= "Registrado Matricula: "+matricula+" min: "+minutos;
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 }
