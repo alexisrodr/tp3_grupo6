@@ -2,6 +2,7 @@ package com.example.tp3grupo6;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 
@@ -9,6 +10,7 @@ import com.example.tp3grupo6.entidades.Usuario;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -18,10 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tp3grupo6.databinding.ActivityHomeBinding;
 
-public class Home extends AppCompatActivity {
+public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityHomeBinding binding;
+    private Usuario usuario;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +34,7 @@ public class Home extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Bundle bundle = getIntent().getExtras();
-        Usuario usuario = (Usuario) bundle.getSerializable("user");
+        usuario = (Usuario) bundle.getSerializable("user");
         Bundle args = new Bundle();
         args.putInt("iduser", usuario.getId());
 
@@ -44,18 +48,26 @@ public class Home extends AppCompatActivity {
         });
         DrawerLayout drawer = binding.drawerLayout;
 
+
+
+
         NavigationView navigationView = binding.navView;
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
         navController.navigate(R.id.nav_home, args);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery)
                 .setOpenableLayout(drawer)
                 .build();
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        navigationView.setNavigationItemSelectedListener(this);
+        MenuItem menuItem = navigationView.getMenu().getItem(0);
+        onNavigationItemSelected(menuItem);
+        menuItem.setChecked(true);
     }
 
     @Override
@@ -73,4 +85,20 @@ public class Home extends AppCompatActivity {
     }
 
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Bundle args = new Bundle();
+
+        switch(item.getItemId()) {
+            case R.id.nav_home:
+                args.putInt("iduser", usuario.getId());
+                navController.navigate(R.id.nav_home, args);
+                break;
+            case R.id.nav_gallery:
+                args.putSerializable("usuario", usuario);
+                navController.navigate(R.id.nav_gallery, args);
+                break;
+        }
+        return true;
+    }
 }
