@@ -2,6 +2,7 @@ package com.example.tp3grupo6.ui.home;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tp3grupo6.ConexionSQLiteHelper.ConexionSQLiteHelper;
+import com.example.tp3grupo6.Home;
 import com.example.tp3grupo6.R;
 import com.example.tp3grupo6.databinding.FragmentHomeBinding;
 import com.example.tp3grupo6.entidades.Parkeo;
+import com.example.tp3grupo6.entidades.Usuario;
 
 import java.util.ArrayList;
 
@@ -27,27 +30,24 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
+
+        conn = new ConexionSQLiteHelper(getActivity().getApplicationContext(), "usuarios", null, 1 );
+        int iduser = -1;
+        ArrayList<Parkeo> parkeos = new ArrayList<>();
+        try {
+            iduser = getArguments().getInt("iduser");
+            parkeos = conn.obtenerParkeos(iduser);
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        Log.d("BUNDLE", "iduser: " + iduser);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         GridView gridView = root.findViewById(R.id.grillaParkeos);
 
-        //conn = new ConexionSQLiteHelper(getActivity().getApplicationContext(), "usuarios", null, 1 );
-        ArrayList<Parkeo> parkeos = new ArrayList<>();
-        //parkeos = conn.obtenerParkeos();
-        parkeos.add(new Parkeo(1,"ABC", 123, 1));
-        parkeos.add(new Parkeo(2,"ADC", 123, 1));
-        parkeos.add(new Parkeo(3,"AFC", 123, 1));
-        parkeos.add(new Parkeo(4,"AFC", 123, 1));
-        parkeos.add(new Parkeo(5,"AFC", 123, 1));
-        parkeos.add(new Parkeo(6,"AFC", 123, 1));
-        parkeos.add(new Parkeo(7,"AFC", 123, 1));
-        parkeos.add(new Parkeo(8,"AFC", 123, 1));
-        parkeos.add(new Parkeo(9,"AFC", 123, 1));
-        parkeos.add(new Parkeo(10,"AFC", 123, 1));
         gridView.setAdapter(new ParkeoAdapter(getActivity().getApplicationContext(), parkeos));
         return root;
     }

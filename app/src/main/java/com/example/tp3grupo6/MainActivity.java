@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,10 +15,13 @@ import android.widget.Toast;
 import com.example.tp3grupo6.ConexionSQLiteHelper.ConexionSQLiteHelper;
 import com.example.tp3grupo6.entidades.Usuario;
 
+import java.io.Serializable;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText editName, editPassword;
     ConexionSQLiteHelper Conn;
+    Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +35,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Login(View view) {
-        Intent i = new Intent(this, Home.class);
+
 
         if (VerificarUsuario()) {
+            Bundle bundle = new Bundle();
+            Intent i = new Intent(this, Home.class);
+            bundle.putSerializable("user", usuario);
+            i.putExtras(bundle);
             startActivity(i);
         }
     }
@@ -48,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Usuario usuario = new Usuario();
+        usuario = new Usuario();
 
         editName = (EditText) findViewById(R.id.editUsername);
         editPassword = (EditText) findViewById(R.id.editPassword);
@@ -62,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
             usuario = Conn.VerificarUsuario(editName.getText().toString(), editPassword.getText().toString());
             //bd.query("usuarios", new srtring[]{"id, nombre, pass"}, "nombre = '" )
 
-            if (usuario.getNombre() != null) {
 
+            if (usuario.getNombre() != null) {
                 existe = true;
                 Toast.makeText(this, "Ingreso correctamente.", Toast.LENGTH_SHORT).show();
             } else {

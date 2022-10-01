@@ -57,7 +57,7 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase bd = getReadableDatabase();
 
         Cursor fila = bd.rawQuery
-                ("select nombre, correo from usuarios where nombre = '" +
+                ("select * from usuarios where nombre = '" +
                         nombre + "' and password = '" + password + "' or password = ''", null);
 
 
@@ -65,8 +65,9 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
 
         if(fila!=null) {
             if (fila.moveToFirst()) {
-                usuario.setNombre(fila.getString(0));
-                usuario.setCorreo(fila.getString(1));
+                usuario.setId(fila.getInt(0));
+                usuario.setNombre(fila.getString(1));
+                usuario.setCorreo(fila.getString(2));
             }
             fila.close();
         }
