@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.Menu;
 import android.widget.Toast;
 
+import com.example.tp3grupo6.ConexionSQLiteHelper.ConexionSQLiteHelper;
+import com.example.tp3grupo6.entidades.Parkeo;
 import com.example.tp3grupo6.entidades.Usuario;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -28,6 +30,7 @@ public class Home extends AppCompatActivity
     private ActivityHomeBinding binding;
     private Usuario usuario;
     private NavController navController;
+    private ConexionSQLiteHelper con;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +109,22 @@ public class Home extends AppCompatActivity
 
     @Override
     public void obtenerTexto(String matricula, String minutos) {
-        
+        String mensaje= "";
+        try {
+            if(!matricula.isEmpty() && !minutos.isEmpty()){
+                con= new ConexionSQLiteHelper(this, "usuarios", null, 1);
+                Parkeo parkeo= new Parkeo(matricula,Integer.parseInt(minutos),usuario.getId());
+                if(con.createParkeo(parkeo))
+                    mensaje = "Registrado Matricula: "+matricula+" minutos: "+minutos;
+                else
+                    mensaje= "No se Registrar el parkeo";
+            }
+            else
+                mensaje= "Debe completar todos los campos";
 
-        String mensaje= "Registrado Matricula: "+matricula+" min: "+minutos;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 }

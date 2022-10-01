@@ -100,7 +100,9 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
     }
 
     //CREATE PARKING
-    public void createParkeo(Parkeo parkeo) {
+    public boolean createParkeo(Parkeo parkeo) {
+        long filas;
+        boolean creado= false;
         SQLiteDatabase bd = getWritableDatabase();
         ContentValues valores = new ContentValues();
 
@@ -108,8 +110,14 @@ public class ConexionSQLiteHelper extends SQLiteOpenHelper {
         valores.put("minutos", parkeo.getMinutos());
         valores.put("usuario_id", parkeo.getUsuario_id());
 
-        bd.insert("parkeos", null, valores);
+        filas=bd.insert("parkeos", null, valores);
+        if(filas>0){
+            creado= true;
+        }
+        else
+            creado=false;
         bd.close();
+        return creado;
     }
 
     public ArrayList<Parkeo> obtenerParkeos(int idUsuario){

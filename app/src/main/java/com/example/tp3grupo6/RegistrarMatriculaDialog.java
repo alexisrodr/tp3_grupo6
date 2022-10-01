@@ -21,8 +21,6 @@ import com.example.tp3grupo6.entidades.Usuario;
 public class RegistrarMatriculaDialog extends AppCompatDialogFragment {
     private EditText etMatricula;
     private EditText etMinutos;
-    private ConexionSQLiteHelper conn;
-    private Usuario usuario;
     private RegistrarMatriculaDialogListener listener;
 
     @NonNull
@@ -62,7 +60,7 @@ public class RegistrarMatriculaDialog extends AppCompatDialogFragment {
             listener=(RegistrarMatriculaDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()+
-                    "Debe implementar RegistrarMatriculaDialogListener");
+                    "Debe implementar interface RegistrarMatriculaDialogListener");
         }
     }
 
