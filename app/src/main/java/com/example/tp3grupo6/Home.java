@@ -58,7 +58,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // menu should be considered as top level destinations.
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
-        navController.navigate(R.id.nav_home, args);
+        navController.setGraph(R.navigation.mobile_navigation, args);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_home, R.id.nav_gallery)
                 .setOpenableLayout(drawer)
