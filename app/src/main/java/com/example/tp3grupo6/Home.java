@@ -125,6 +125,10 @@ public class Home extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Bundle args = new Bundle();
+        args.putInt("iduser", usuario.getId());
+        navController.navigate(R.id.nav_home, args);
+
         Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 }

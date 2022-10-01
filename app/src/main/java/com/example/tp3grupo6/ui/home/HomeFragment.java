@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -48,7 +49,7 @@ public class HomeFragment extends Fragment {
 
         GridView gridView = root.findViewById(R.id.grillaParkeos);
 
-        gridView.setAdapter(new ParkeoAdapter(getActivity().getApplicationContext(), parkeos));
+        gridView.setAdapter(new ParkeoAdapter(getActivity().getApplicationContext(),parkeos));
         return root;
     }
 
